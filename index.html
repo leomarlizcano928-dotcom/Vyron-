@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VYRON — Donde comienza tu historia gamer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg: #0A0D12; --surface: #12161F; --surface-2: #1A2029; --border: #262E3B;
+  --text: #EAEDF3; --text-muted: #8892A0; --accent-xp: #3FE8C4; --accent-score: #FF6B4A;
+  --danger: #FF5470; --radius: 14px;
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:
+    radial-gradient(ellipse 900px 500px at 15% -10%, rgba(63,232,196,0.08), transparent),
+    radial-gradient(ellipse 900px 500px at 90% 10%, rgba(255,107,74,0.06), transparent),
+    var(--bg);
+  color:var(--text); font-family:var(--font-body); line-height:1.5; min-height:100vh;
+}
+a{color:inherit;}
+h1,h2,h3{font-family:var(--font-display); margin:0 0 .4em 0; letter-spacing:-0.01em;}
+p{color:var(--text-muted); margin:0 0 1em 0;}
+.wrap{max-width:480px; margin:0 auto; padding:24px 20px 64px;}
+.eyebrow{font-family:var(--font-mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent-xp);}
+.btn{display:inline-flex; align-items:center; justify-content:center; width:100%; padding:14px 18px; border-radius:10px; border:1px solid transparent; font-family:var(--font-body); font-weight:600; font-size:15px; cursor:pointer; text-decoration:none; transition:transform .08s ease, opacity .15s ease;}
+.btn:active{transform:scale(.98);}
+.btn-primary{background:var(--accent-xp); color:#04241C;}
+.btn-secondary{background:transparent; border-color:var(--border); color:var(--text);}
+.btn-danger{background:transparent; border-color:var(--danger); color:var(--danger);}
+.btn[disabled]{opacity:.5; pointer-events:none;}
+.field{margin-bottom:16px;}
+.field label{display:block; font-size:13px; color:var(--text-muted); margin-bottom:6px;}
+.field input, .field select{width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:12px 14px; color:var(--text); font-family:var(--font-body); font-size:15px;}
+.field input:focus, .field select:focus{outline:2px solid var(--accent-xp); outline-offset:1px;}
+.field small{display:block; margin-top:6px; color:var(--text-muted); font-size:12px;}
+.card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px;}
+.msg{font-family:var(--font-mono); font-size:13px; padding:10px 12px; border-radius:8px; margin-bottom:16px; display:none;}
+.msg.show{display:block;}
+.msg.error{background:rgba(255,84,112,.1); color:var(--danger); border:1px solid rgba(255,84,112,.3);}
+.msg.ok{background:rgba(63,232,196,.1); color:var(--accent-xp); border:1px solid rgba(63,232,196,.3);}
+.gid-card{position:relative; background:linear-gradient(155deg, var(--surface-2) 0%, var(--surface) 60%); border:1px solid var(--border); border-radius:18px; padding:22px; overflow:hidden;}
+.gid-card::before{content:""; position:absolute; top:-40%; right:-20%; width:220px; height:220px; background:conic-gradient(from 200deg, var(--accent-xp), transparent 40%); opacity:.14; filter:blur(4px);}
+.gid-top{display:flex; justify-content:space-between; align-items:flex-start; position:relative;}
+.gid-handle{font-family:var(--font-display); font-size:22px;}
+.gid-rank{font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; color:var(--accent-score); text-transform:uppercase;}
+.gid-ring{width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-weight:600; font-size:14px; background:conic-gradient(var(--accent-xp) calc(var(--pct,50)*1%), var(--surface-2) 0); flex-shrink:0;}
+.gid-ring span{width:44px; height:44px; border-radius:50%; background:var(--surface); display:flex; align-items:center; justify-content:center;}
+.gid-stats{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:18px; position:relative;}
+.gid-stat b{display:block; font-family:var(--font-mono); font-size:18px; color:var(--text);}
+.gid-stat span{font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em;}
+nav.topbar{display:flex; justify-content:space-between; align-items:center; padding:16px 20px; border-bottom:1px solid var(--border);}
+nav.topbar .logo{font-family:var(--font-display); font-weight:700; font-size:18px; cursor:pointer;}
+nav.topbar .logo span{color:var(--accent-xp);}
+.view{display:none;}
+.view.active{display:block;}
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="logo" onclick="navigate('landing')">VYR<span>ON</span></div>
+  <button id="logout-btn" class="btn btn-danger" style="display:none; width:auto; padding:8px 14px; font-size:13px;" onclick="handleLogout()">Salir</button>
+</nav>
+
+<!-- ================= LANDING ================= -->
+<div id="view-landing" class="view">
+  <div class="wrap">
+    <div class="eyebrow" style="margin-top:8px;">Plataforma gamer internacional</div>
+    <h1 style="font-size:34px; margin-top:6px;">Donde comienza tu historia gamer.</h1>
+    <p style="font-size:16px;">Un Gamer ID que crece contigo: nivel, rango, Gamer Score y retos, sin importar qué juegues ni en qué plataforma.</p>
+
+    <div class="gid-card" style="margin:24px 0;">
+      <div class="gid-top">
+        <div><div class="gid-handle">@ShadowX</div><div class="gid-rank">Élite</div></div>
+        <div class="gid-ring" style="--pct:68;"><span>Nv 47</span></div>
+      </div>
+      <div class="gid-stats">
+        <div class="gid-stat"><b>84.2K</b><span>XP</span></div>
+        <div class="gid-stat"><b>12.9K</b><span>Score</span></div>
+        <div class="gid-stat"><b>🔥 14</b><span>Racha</span></div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="navigate('register')">Crear mi Gamer ID</button>
+    <div style="height:10px;"></div>
+    <button class="btn btn-secondary" onclick="navigate('login')">Iniciar sesión</button>
+
+    <div class="card" style="margin-top:32px;">
+      <h3 style="font-size:16px;">¿Qué es un Gamer ID?</h3>
+      <p style="margin-bottom:0;">Tu identidad gamer permanente en VYRON. Reúne tus juegos, tu progreso y tu trayectoria en un solo perfil.</p>
+    </div>
+    <div class="card" style="margin-top:14px;">
+      <h3 style="font-size:16px;">¿Qué es el Gamer Score?</h3>
+      <p style="margin-bottom:0;">Una métrica de tu trayectoria dentro de VYRON: retos, logros, rachas y participación — no solo horas jugadas.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ================= REGISTER ================= -->
+<div id="view-register" class="view">
+  <div class="wrap">
+    <div class="eyebrow">Paso 1 de 1</div>
+    <h1 style="font-size:26px;">Crea tu Gamer ID</h1>
+    <p>Tu historia gamer comienza ahora.</p>
+    <div id="register-msg" class="msg"></div>
+    <form id="register-form">
+      <div class="field">
+        <label>Gamer ID</label>
+        <input type="text" name="gamer_id" placeholder="ShadowX" required>
+        <small>3-20 caracteres, sin espacios ni @</small>
+      </div>
+      <div class="field"><label>Correo</label><input type="email" name="email" required></div>
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" name="password" minlength="6" required>
+        <small>Mínimo 6 caracteres</small>
+      </div>
+      <div class="field">
+        <label>País</label>
+        <select name="country">
+          <option value="">Selecciona tu país</option>
+          <option>Colombia</option><option>México</option><option>Argentina</option>
+          <option>España</option><option>Chile</option><option>Perú</option>
+          <option>Estados Unidos</option><option>Otro</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Crear mi Gamer ID</button>
+    </form>
+    <p style="text-align:center; margin-top:18px;">¿Ya tienes cuenta?
+      <a href="#" style="color:var(--accent-xp);" onclick="navigate('login'); return false;">Inicia sesión</a>
+    </p>
+  </div>
+</div>
+
+<!-- ================= LOGIN ================= -->
+<div id="view-login" class="view">
+  <div class="wrap">
+    <h1 style="font-size:26px;">Inicia sesión</h1>
+    <p>Continúa tu historia gamer.</p>
+    <div id="login-msg" class="msg"></div>
+    <form id="login-form">
+      <div class="field"><label>Correo</label><input type="email" name="email" required></div>
+      <div class="field"><label>Contraseña</label><input type="password" name="password" required></div>
+      <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+    </form>
+    <p style="text-align:center; margin-top:18px;">¿No tienes Gamer ID?
+      <a href="#" style="color:var(--accent-xp);" onclick="navigate('register'); return false;">Créalo aquí</a>
+    </p>
+  </div>
+</div>
+
+<!-- ================= DASHBOARD ================= -->
+<div id="view-dashboard" class="view">
+  <div class="wrap" id="dash-root">
+    <div class="eyebrow">Tu Gamer ID</div>
+    <div class="gid-card" style="margin:12px 0 24px;">
+      <div class="gid-top">
+        <div><div class="gid-handle" id="gid-handle">@...</div><div class="gid-rank" id="gid-rank">...</div></div>
+        <div class="gid-ring" id="gid-ring" style="--pct:0;"><span id="gid-level">Nv 1</span></div>
+      </div>
+      <div class="gid-stats">
+        <div class="gid-stat"><b id="gid-xp">0</b><span>XP</span></div>
+        <div class="gid-stat"><b id="gid-score">0</b><span>Score</span></div>
+        <div class="gid-stat"><b id="gid-points">0</b><span>Points</span></div>
+      </div>
+      <div style="margin-top:14px; font-family:var(--font-mono); font-size:13px; color:var(--text-muted);" id="gid-streak">🔥 0</div>
+    </div>
+    <div class="card" id="challenge-box"><p>Cargando reto del día...</p></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ============================================================
+// VYRON — conexión a Supabase (tus claves ya están puestas)
+// ============================================================
+const SUPABASE_URL = "https://aoyjxfvleeznadgemlti.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_TWI-Vgy9dE6JLcT1nQa_3g_wQUpp9wo";
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ============================================================
+// Router muy simple: muestra una sola "vista" a la vez
+// ============================================================
+function navigate(view){
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  document.getElementById("view-" + view).classList.add("active");
+  window.location.hash = view;
+  document.getElementById("logout-btn").style.display = (view === "dashboard") ? "inline-flex" : "none";
+  if(view === "dashboard") loadDashboard();
+}
+
+async function boot(){
+  const { data: { session } } = await sb.auth.getSession();
+  const hash = window.location.hash.replace("#", "");
+  if(hash === "dashboard" || (session && (hash === "" || hash === "landing"))){
+    if(session){ navigate("dashboard"); return; }
+  }
+  navigate(hash && ["landing","register","login","dashboard"].includes(hash) ? hash : "landing");
+}
+
+// ============================================================
+// Auth: registro / login / logout
+// ============================================================
+function showMsg(el, text, type){
+  el.textContent = text;
+  el.className = "msg show " + type;
+}
+
+document.getElementById("register-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = event.target;
+  const btn = form.querySelector("button[type=submit]");
+  const msg = document.getElementById("register-msg");
+
+  const gamerId = form.gamer_id.value.trim();
+  const email = form.email.value.trim();
+  const password = form.password.value;
+  const country = form.country.value;
+
+  if(!/^[A-Za-z0-9_]{3,20}$/.test(gamerId)){
+    showMsg(msg, "El Gamer ID debe tener 3-20 caracteres: letras, números o _", "error");
+    return;
+  }
+  if(password.length < 6){
+    showMsg(msg, "La contraseña debe tener al menos 6 caracteres.", "error");
+    return;
+  }
+
+  btn.disabled = true; btn.textContent = "Creando Gamer ID...";
+  const { data, error } = await sb.auth.signUp({
+    email, password,
+    options: { data: { gamer_id: gamerId, country } }
+  });
+  btn.disabled = false; btn.textContent = "Crear mi Gamer ID";
+
+  if(error){
+    if(error.message.includes("duplicate key") || error.message.includes("unique")){
+      showMsg(msg, "Ese Gamer ID ya está en uso. Elige otro.", "error");
+    } else {
+      showMsg(msg, error.message, "error");
+    }
+    return;
+  }
+
+  if(data.session){
+    navigate("dashboard");
+  } else {
+    showMsg(msg, "Cuenta creada. Revisa tu correo para confirmar, luego inicia sesión.", "ok");
+    form.reset();
+  }
+});
+
+document.getElementById("login-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = event.target;
+  const btn = form.querySelector("button[type=submit]");
+  const msg = document.getElementById("login-msg");
+
+  btn.disabled = true; btn.textContent = "Entrando...";
+  const { error } = await sb.auth.signInWithPassword({
+    email: form.email.value.trim(),
+    password: form.password.value
+  });
+  btn.disabled = false; btn.textContent = "Iniciar sesión";
+
+  if(error){ showMsg(msg, "Correo o contraseña incorrectos.", "error"); return; }
+  navigate("dashboard");
+});
+
+async function handleLogout(){
+  await sb.auth.signOut();
+  navigate("landing");
+}
+
+// ============================================================
+// Dashboard: perfil real + reto del día
+// ============================================================
+async function loadDashboard(){
+  const { data: { session } } = await sb.auth.getSession();
+  if(!session){ navigate("login"); return; }
+
+  const { data: profile, error } = await sb
+    .from("profiles").select("*").eq("id", session.user.id).single();
+
+  if(error){
+    document.getElementById("dash-root").innerHTML =
+      `<p class="msg error show">No se pudo cargar tu perfil: ${error.message}</p>`;
+    return;
+  }
+  renderProfile(profile);
+  loadDailyChallenge(profile.id);
+}
+
+function xpForNextLevel(level){ return 50 * Math.pow(level, 2); }
+
+function renderProfile(p){
+  document.getElementById("gid-handle").textContent = "@" + p.gamer_id;
+  document.getElementById("gid-rank").textContent = p.rank;
+  document.getElementById("gid-level").textContent = "Nv " + p.level;
+  document.getElementById("gid-xp").textContent = p.xp.toLocaleString("es");
+  document.getElementById("gid-score").textContent = p.gamer_score.toLocaleString("es");
+  document.getElementById("gid-points").textContent = p.gamer_points.toLocaleString("es");
+  document.getElementById("gid-streak").textContent = "🔥 " + p.streak_count;
+
+  const xpStart = 50 * Math.pow(p.level - 1, 2);
+  const xpEnd = xpForNextLevel(p.level);
+  const pct = Math.min(100, Math.round(((p.xp - xpStart) / (xpEnd - xpStart)) * 100));
+  document.getElementById("gid-ring").style.setProperty("--pct", pct);
+}
+
+async function loadDailyChallenge(profileId){
+  const { data: challenges } = await sb
+    .from("challenges").select("*").eq("type", "daily").eq("active", true).limit(1);
+  if(!challenges || !challenges.length) return;
+  const challenge = challenges[0];
+
+  const { data: done } = await sb
+    .from("user_challenges").select("id")
+    .eq("profile_id", profileId).eq("challenge_id", challenge.id)
+    .eq("completed_on", new Date().toISOString().slice(0,10));
+
+  const box = document.getElementById("challenge-box");
+  const alreadyDone = done && done.length > 0;
+  box.innerHTML = `
+    <div class="eyebrow">Reto de hoy</div>
+    <h3>${challenge.title}</h3>
+    <p>${challenge.description || ""} · +${challenge.xp_reward} XP · +${challenge.points_reward} Gamer Points</p>
+    <button id="challenge-btn" class="btn btn-primary" ${alreadyDone ? "disabled" : ""}>
+      ${alreadyDone ? "Ya completado hoy ✓" : "Completar reto"}
+    </button>`;
+
+  if(!alreadyDone){
+    document.getElementById("challenge-btn").addEventListener("click", async () => {
+      const btn = document.getElementById("challenge-btn");
+      btn.disabled = true; btn.textContent = "Enviando...";
+      const { data, error } = await sb.rpc("complete_challenge", { p_challenge_id: challenge.id });
+      if(error){
+        btn.disabled = false; btn.textContent = "Completar reto";
+        alert("No se pudo completar: " + error.message);
+        return;
+      }
+      renderProfile(data);
+      btn.textContent = "Ya completado hoy ✓";
+    });
+  }
+}
+
+boot();
+</script>
+</body>
+  </html>
+  
